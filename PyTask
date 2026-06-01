@@ -1,0 +1,58 @@
+def cadastrar():
+    print("Insira as informações do compromisso!")
+    pauta = input("Pauta: ")
+    data = input("Data (dd/mm/yy): ")
+    horario = input("Horário (hh:mm): ")
+    horario.split(":")
+    hora = horario[0]
+    minuto = horario[1]
+    r = input("Tarefa presencial? (s/n): ")
+    if r == "s" or r == "S":
+        online = True
+    elif r == "n" or r == "N":
+        online = False
+    else:
+        print("Resposta inválida")
+    if online:
+        local = input("Informe a plataforma: ")
+    else:
+        local = input("Local: ")
+
+    compromisso = [pauta, hora, minuto, local, online]
+
+    return compromisso
+
+agenda = []
+
+resposta = "0"
+
+while resposta != "f" and resposta != "F":
+    print("*----------------------*")
+    print("*--(I)nserir reunião---*")
+    print("*--(C)onsultar---------*")
+    print("*--(E)ditar------------*")
+    print("*--(A)pagar------------*")
+    print("*--(F)echar------------*")
+    print("*----------------------*")
+
+    resposta = input("Opção --> ")
+
+    match resposta:
+        case "I" | "i":
+            agenda.append(cadastrar())
+            print(agenda)
+        case "C" | "c":
+
+            print()
+        case "E" | "e":
+
+            print()
+        case "A" | "a":
+
+            print()
+        case "F" | "f":
+
+            print()
+        case _:
+
+            print()
