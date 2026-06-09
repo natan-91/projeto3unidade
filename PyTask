@@ -2,14 +2,14 @@ def cadastrar():
     print("Insira as informações do compromisso!")
     pauta = input("Pauta: ")
     data = input("Data (dd/mm/yy): ")
+    data = data.split("/",maxsplit=3)
     horario = input("Horário (hh:mm): ")
-    horario.split(":")
-    hora = horario[0]
-    minuto = horario[1]
+    horario = horario.split(":", maxsplit=2)
+    online = False
     r = input("Tarefa presencial? (s/n): ")
-    if r == "s" or r == "S":
+    if r == "n" or r == "N":
         online = True
-    elif r == "n" or r == "N":
+    elif r == "s" or r == "S":
         online = False
     else:
         print("Resposta inválida")
@@ -18,11 +18,111 @@ def cadastrar():
     else:
         local = input("Local: ")
 
-    compromisso = [pauta, hora, minuto, local, online]
+    chave = data[0] + data[1] + data[2] + horario[0] + horario[1]
 
-    return compromisso
+    #print(chave)
 
-agenda = []
+    return {chave : [pauta, data, horario, local, online]}
+
+def mostrar(compromisso):
+    mesExtenso = ("janeiro", "fevereiro","março", "abril", "maio", "junho", "julho",
+                  "agosto", "setembro","outubro", "novembro" ,"dezembro")
+
+    print("Compromisso:",compromisso[0])
+    print("Data:",compromisso[1][0],"de",mesExtenso[int(compromisso[1][1])-1], "de", compromisso[1][2])
+    print("Horário: ",compromisso[2][0],"h",compromisso[2][1],sep="")
+    if compromisso[4] == False:
+        print("Local:", compromisso[3])
+    else:
+        print("Plataforma:", compromisso[3])
+
+def consulta(agenda):
+    compromissosDoDia = []
+
+    print("Informe a data!")
+    data = input("Data (dd/mm/yy): ")
+    data = data.split("/", maxsplit=3)
+    print()
+
+    for i in agenda.values():
+        if i[1] == data:
+           compromissosDoDia.append(i)
+
+    compromissosDoDia.sort(key=lambda x: x[2])
+
+    if not compromissosDoDia:
+        print("Não há compromissos nesta data!")
+    else:
+        for i in compromissosDoDia:
+            mostrar(i)
+            print()
+
+def editar(agenda):
+    compromissosDoDia = []
+
+    print("Informe a data!")
+    data = input("Data (dd/mm/yy): ")
+    data = data.split("/", maxsplit=3)
+    print()
+
+    for i in agenda.values():
+        if i[1] == data:
+           compromissosDoDia.append(i)
+
+    compromissosDoDia.sort(key=lambda x: x[2])
+
+    if not compromissosDoDia:
+        print("Não há compromissos nesta data!")
+    else:
+        cont = 0
+        for i in compromissosDoDia:
+            cont += 1
+            print(cont,"- ",sep="")
+            mostrar(i)
+            print()
+        escolha = int(input("Escolha o compromisso pelo número: "))
+        escolha -= 1
+        chave = (compromissosDoDia[escolha][1][0] + compromissosDoDia[escolha][1][1] +
+                 compromissosDoDia[escolha][1][2] + compromissosDoDia[escolha][2][0] +
+                 compromissosDoDia[escolha][2][1])
+        del agenda[chave]
+        agenda.update(cadastrar())
+        print("Compromisso atualizado com sucesso!")
+
+def apagar(agenda):
+    compromissosDoDia = []
+
+    print("Informe a data!")
+    data = input("Data (dd/mm/yy): ")
+    data = data.split("/", maxsplit=3)
+    print()
+
+    for i in agenda.values():
+        if i[1] == data:
+           compromissosDoDia.append(i)
+
+    compromissosDoDia.sort(key=lambda x: x[2])
+
+    if not compromissosDoDia:
+        print("Não há compromissos nesta data!")
+    else:
+        cont = 0
+        for i in compromissosDoDia:
+            cont += 1
+            print(cont,"- ",sep="")
+            mostrar(i)
+            print()
+        escolha = int(input("Escolha o compromisso pelo número: "))
+        escolha -= 1
+        chave = (compromissosDoDia[escolha][1][0] + compromissosDoDia[escolha][1][1] +
+                 compromissosDoDia[escolha][1][2] + compromissosDoDia[escolha][2][0] +
+                 compromissosDoDia[escolha][2][1])
+        del agenda[chave]
+        print("Entrada apagada com sucesso!")
+
+agenda =  { "3105261430" : ["aula",["31","05","26"],["14","30"],"ufrn",False],
+            "3105262030" : ["aniversario",["31","05","26"],["20","30"],"napoles",False],
+            "2707262000" : ["aniversario",["27","07","26"],["20","00"],"casa",False]}
 
 resposta = "0"
 
@@ -39,16 +139,18 @@ while resposta != "f" and resposta != "F":
 
     match resposta:
         case "I" | "i":
-            agenda.append(cadastrar())
+            agenda.update(cadastrar())
             print(agenda)
         case "C" | "c":
-
+            consulta(agenda)
             print()
         case "E" | "e":
-
+            editar(agenda)
+            print(agenda)
             print()
         case "A" | "a":
-
+            apagar(agenda)
+            print(agenda)
             print()
         case "F" | "f":
 
