@@ -26,7 +26,7 @@ def cadastrar():
 
 def mostrar(compromisso):
     mesExtenso = ("janeiro", "fevereiro","março", "abril", "maio", "junho", "julho",
-                  "agosto", "setembro","outubro", "novembro" ,"dezembro")
+                  "agosto", "setembro", "outubro", "novembro" ,"dezembro")
 
     print("Compromisso:",compromisso[0])
     print("Data:",compromisso[1][0],"de",mesExtenso[int(compromisso[1][1])-1], "de", compromisso[1][2])
@@ -36,7 +36,7 @@ def mostrar(compromisso):
     else:
         print("Plataforma:", compromisso[3])
 
-def consulta(agenda):
+def geral(agenda, opcao):
     compromissosDoDia = []
 
     print("Informe a data!")
@@ -46,79 +46,50 @@ def consulta(agenda):
 
     for i in agenda.values():
         if i[1] == data:
-           compromissosDoDia.append(i)
+            compromissosDoDia.append(i)
 
     compromissosDoDia.sort(key=lambda x: x[2])
 
-    if not compromissosDoDia:
-        print("Não há compromissos nesta data!")
-    else:
-        for i in compromissosDoDia:
-            mostrar(i)
-            print()
-
-def editar(agenda):
-    compromissosDoDia = []
-
-    print("Informe a data!")
-    data = input("Data (dd/mm/yy): ")
-    data = data.split("/", maxsplit=3)
-    print()
-
-    for i in agenda.values():
-        if i[1] == data:
-           compromissosDoDia.append(i)
-
-    compromissosDoDia.sort(key=lambda x: x[2])
-
-    if not compromissosDoDia:
-        print("Não há compromissos nesta data!")
-    else:
+    if compromissosDoDia:
         cont = 0
         for i in compromissosDoDia:
             cont += 1
-            print(cont,"- ",sep="")
+            print(cont, "- ", sep="")
             mostrar(i)
             print()
-        escolha = int(input("Escolha o compromisso pelo número: "))
-        escolha -= 1
-        chave = (compromissosDoDia[escolha][1][0] + compromissosDoDia[escolha][1][1] +
-                 compromissosDoDia[escolha][1][2] + compromissosDoDia[escolha][2][0] +
-                 compromissosDoDia[escolha][2][1])
-        del agenda[chave]
-        agenda.update(cadastrar())
-        print("Compromisso atualizado com sucesso!")
-
-def apagar(agenda):
-    compromissosDoDia = []
-
-    print("Informe a data!")
-    data = input("Data (dd/mm/yy): ")
-    data = data.split("/", maxsplit=3)
-    print()
-
-    for i in agenda.values():
-        if i[1] == data:
-           compromissosDoDia.append(i)
-
-    compromissosDoDia.sort(key=lambda x: x[2])
-
-    if not compromissosDoDia:
-        print("Não há compromissos nesta data!")
+        match opcao:
+            case 1:
+                escolha2 = input("Consultar outra data? (s/n)")
+                if escolha2 == "s" or escolha2 == "S":
+                    geral(agenda, opcao)
+            case 2:
+                escolha1 = int(input("Escolha o compromisso pelo número: "))
+                escolha1 -= 1
+                chave = (compromissosDoDia[escolha1][1][0] + compromissosDoDia[escolha1][1][1] +
+                         compromissosDoDia[escolha1][1][2] + compromissosDoDia[escolha1][2][0] +
+                         compromissosDoDia[escolha1][2][1])
+                del agenda[chave]
+                agenda.update(cadastrar())
+                print("Compromisso atualizado com sucesso!")
+                escolha2 = input("Continuar atualizando? (s/n)")
+                if escolha2 == "s" or escolha2 == "S":
+                    geral(agenda, opcao)
+            case 3:
+                escolha1 = int(input("Escolha o compromisso pelo número: "))
+                escolha1 -= 1
+                chave = (compromissosDoDia[escolha1][1][0] + compromissosDoDia[escolha1][1][1] +
+                         compromissosDoDia[escolha1][1][2] + compromissosDoDia[escolha1][2][0] +
+                         compromissosDoDia[escolha1][2][1])
+                del agenda[chave]
+                print("Entrada apagada com sucesso!")
+                escolha2 = input("Continuar apagando? (s/n)")
+                if escolha2 == "s" or escolha2 == "S":
+                    geral(agenda, opcao)
     else:
-        cont = 0
-        for i in compromissosDoDia:
-            cont += 1
-            print(cont,"- ",sep="")
-            mostrar(i)
-            print()
-        escolha = int(input("Escolha o compromisso pelo número: "))
-        escolha -= 1
-        chave = (compromissosDoDia[escolha][1][0] + compromissosDoDia[escolha][1][1] +
-                 compromissosDoDia[escolha][1][2] + compromissosDoDia[escolha][2][0] +
-                 compromissosDoDia[escolha][2][1])
-        del agenda[chave]
-        print("Entrada apagada com sucesso!")
+        print("Não há compromisso nesta data!")
+        escolha2 = input("Gostaria de consultar outra data? (s/n)")
+        if escolha2 == "s" or escolha2 == "S":
+            geral(agenda, opcao)
 
 agenda =  { "3105261430" : ["aula",["31","05","26"],["14","30"],"ufrn",False],
             "3105262030" : ["aniversario",["31","05","26"],["20","30"],"napoles",False],
@@ -142,19 +113,16 @@ while resposta != "f" and resposta != "F":
             agenda.update(cadastrar())
             print(agenda)
         case "C" | "c":
-            consulta(agenda)
+            geral(agenda,1)
             print()
         case "E" | "e":
-            editar(agenda)
-            print(agenda)
+            geral(agenda,2)
             print()
         case "A" | "a":
-            apagar(agenda)
-            print(agenda)
+            geral(agenda,3)
             print()
         case "F" | "f":
-
             print()
         case _:
-
+            print("Opção inválida!")
             print()
