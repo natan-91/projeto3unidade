@@ -1,0 +1,116 @@
+def cadastrar():
+
+    nome = input("Nome: ")
+    print("Endereço -> ",end=" ")
+    rua = input("Rua: ")
+    numero = input("Número: ")
+    endereco = rua + " " + numero
+    telefone = input("Telefone: ")
+    email = input("Email: ")
+
+    return  [nome , endereco, telefone , email ]
+
+def mostrarUsuario(chave,usuario):
+    print("Usuário: ",usuario[0])
+    print("CPF: ", chave)
+    print("Endereço: ",usuario[1])
+    print("Telefone: ",usuario[2])
+    print("Email: ",usuario[3])
+    print()
+
+def editarUsuario(chave,usuario):
+    mostrarUsuario(chave,usuario)
+
+    lista = usuario.copy()
+
+    escolha = input("""1.Cadastrar todas as informações novamente?
+    2.Alterar apenas o nome.
+    3.Alterar apenas o endereco.
+    4.Alterar apenas o telefone.
+    5.Alterar apenas o email.""")
+
+    match escolha:
+        case "1":
+            return cadastrar()
+        case "2":
+            lista[0] = input("Nome: ")
+        case "3":
+            rua = input("Rua: ")
+            numero = input("Numero: ")
+            lista[1] = rua + " " + numero
+        case "4":
+            lista[2] = input("Telefone: ")
+        case "5":
+            lista[3] = input("Email: ")
+        case _:
+            print("Opção inválida!")
+            print()
+
+    return lista
+
+
+usuarios = { "09618027406" : ["Natan"  , "Av Rui Mariz 119"   , "84988653453" , "natan@ufrn.com"],
+             "22222222222" : ["Evandro", "Av Rui Mariz 119"   , "84922222222" , "evandro@ufrn.com"],
+             "33333333333" : ["Diana"  , "Av dos gatinhos 101", "84933333333" , "diana@gatos.com"],
+             "44444444444" : ["Milk"   , "Av dos gatinhos 102", "84944444444" , "milk@gatos.com"]
+             }
+resposta = "0"
+
+while resposta != "5":
+    print("*------USUÁRIOS--------*")
+    print("*----------------------*")
+    print("*--1.Cadastrar---------*")
+    print("*--2.Listar------------*")
+    print("*--3.Editar------------*")
+    print("*--4.Apagar------------*")
+    print("*--5.Fechar------------*")
+    print("*----------------------*")
+
+    resposta = input("Opção --> ")
+
+    match resposta:
+        case "1":
+            print("Cadastrando novo usuário...")
+            cpf = input("CPF: ")
+            if cpf in usuarios:
+                print("CPF já cadastrado!")
+            else:
+                usuarios[cpf] = cadastrar()
+                print("Usuário cadastrado!")
+        case "2":
+            print()
+            escolha = input("Gostaria de (L)istar todos os usuários ou (P)rocurar por CPF? ")
+            if escolha == "L" or escolha == "l":
+                for k,i in usuarios.items():
+                    mostrarUsuario(k,i)
+            elif escolha == "P" or escolha == "p":
+                entradaCPF = input("Informe o CPF: ")
+                if entradaCPF in usuarios:
+                    mostrarUsuario(entradaCPF,usuarios[entradaCPF])
+                else:
+                    print("CPF não encontrado!")
+            else:
+                print("Opção inválida!")
+            print()
+        case "3":
+            entradaCPF = input("Informe o CPF: ")
+            if entradaCPF in usuarios:
+                usuarios[entradaCPF] = editarUsuario(entradaCPF, usuarios[entradaCPF])
+                print("Usuário editado com sucesso!")
+            else:
+                print("CPF não encontrado!")
+            print()
+        case "4":
+            entradaCPF = input("Informe o CPF: ")
+            if entradaCPF in usuarios:
+                del usuarios[entradaCPF]
+                print("Usuário apagado com sucesso!")
+            else:
+                print("CPF não encontrado!")
+            print()
+        case "5":
+            print("Adeus.")
+            print()
+        case _:
+            print("Opção inválida!")
+            print()
